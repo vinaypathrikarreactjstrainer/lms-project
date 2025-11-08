@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fusion Lms Chat UI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+
+  <body>
+    <header>
+      <img src="assets/images/image.webp" alt="Funsion - Chat Boat" />
+    </header>
+    <section class="container">
+      <div id="fusion-chatboat">
+        <div id="chat-box"></div>
+        <h1 id="title">What can I help with?</h1>
+        <div class="action">
+            <input type="text" id="message" placeholder="Type your message..." />
+            <button onclick="sendMessage()">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </div>
+      </div>
+    </section>
+
+    <div class="hide">
+      <h2>Fusion LMS Chatbot</h2>
+      <div id="chat-box"></div>
+      <br />
+    </div>
+
+    <script>
+      let msgInput = document.querySelector("#message");
+      msgInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      async function sendMessage() {
+        let msg = document.getElementById("message").value;
+
+        if (msg.trim() === "") return;
+
+        appendMessage(msg, "user");
+
+        const response = await fetch("http://localhost:8080/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(msg),
+        });
+
+        const data = await response.json();
+        // console.log('data => ', );
+        const dataText = data.result.output.text;
+        const aiReply = dataText || "No response";
+
+        appendMessage(aiReply, "bot");
+        document.getElementById("message").value = "";
+      }
+
+      function appendMessage(text, type) {
+        let chatBox = document.getElementById("chat-box");
+
+        let div = document.createElement("div");
+        div.className = type;
+        div.textContent = text;
+
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
