@@ -19,6 +19,7 @@ html,
 body {
   font-family: "Open Sans", sans-serif;
   background: #f0f0f0;
+  font-weight: bold;
 }
 header {
     background: #232821;
